@@ -1,17 +1,16 @@
 import java.io.File
-import java.util.HashMap
 
 fun main() {
-    val file : File = File("src/main/Day_1/input.txt")
-    val numbersPerLine : ArrayList<Int> = ArrayList()
-    val resultNumbers : ArrayList<Int> = ArrayList()
-    val numbersAsText : MutableMap<String, Int> = LinkedHashMap()
+    val file: File = File("src/main/Day_1/input.txt")
+    val numbersPerLine: ArrayList<Int> = ArrayList()
+    val resultNumbers: ArrayList<Int> = ArrayList()
+    val numbersAsText: MutableMap<String, Int> = LinkedHashMap()
 
-    var number : Int = 0
-    var result : Int = 0
-    var text : String = ""
+    var number: Int = 0
+    var result: Int = 0
+    var text: String = ""
 
-    var partOf : Boolean = false
+    var partOf: Boolean = false
 
     numbersAsText["one"] = 1
     numbersAsText["two"] = 2
@@ -26,7 +25,7 @@ fun main() {
     file.forEachLine { line ->
         partOf = false
         numbersPerLine.clear()
-        line.forEach charLoop@ { char ->
+        line.forEach charLoop@{ char ->
             partOf = false
             if (char.isDigit()) {
                 numbersPerLine.add(char.digitToInt())
@@ -55,6 +54,6 @@ fun main() {
         number = "${numbersPerLine.first()}".plus("${numbersPerLine.last()}").toInt()
         resultNumbers.add(number)
     }
-    resultNumbers.forEach{result += it}
+    resultNumbers.forEach { result += it }
     print(result)
 }
