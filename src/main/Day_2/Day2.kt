@@ -1,21 +1,79 @@
 import java.io.File
+import javax.swing.text.StyledEditorKit.BoldAction
 
 fun main() {
-    val file: File = File("src/main/Day_2/input.txt")
-    val gameList: ArrayList<Game> = ArrayList()
-    file.forEachLine eachLine@ { line -> gameList.add(Game(line)) }
+    part1()
 }
 
+private fun part1() {
+    val file = File("src/main/Day_2/input.txt")
+    val gameList: ArrayList<Game> = ArrayList()
+    val isPossibleGame = Game(12, 14, 13)
+    var result = 0
+
+    file.forEachLine eachLine@{ line -> gameList.add(Game(line)) }
+    gameList.forEach { game ->
+        if (game.isGamePossible(isPossibleGame)) {
+            result += game.id
+        }
+    }
+    print(result)
+}
 
 
 class Game(line: String) {
 
-    class Subset(set: String) {
-        var red: Int = 0
-        var blue: Int = 0
-        var green: Int = 0
+    var id: Int = -1
+    val sets: ArrayList<Subset> = ArrayList()
 
-        init {
+
+    constructor(red: Int = 0, blue: Int = 0, green: Int = 0) : this("") {
+        sets.add(Subset(red, blue, green))
+    }
+
+    init {
+        if (line.isNotEmpty()) {
+            val list = line.split(";", ":")
+            for (i in 1..<list.size) {
+                sets.add(Subset(list[i]))
+            }
+            id = list[0].split(" ")[1].toInt()
+        }
+    }
+
+    /**
+     * @return Returns true if other game is possible with sets of this game.
+     */
+    fun isGamePossible(other: Game): Boolean {
+        sets.forEach { subset ->
+            if (!subset.isSetPossible(other.sets[0])) {
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun toString(): String {
+        return "Game(id=$id, sets=$sets)"
+    }
+
+
+}
+
+
+class Subset(set: String) {
+    var red: Int = 0
+    var blue: Int = 0
+    var green: Int = 0
+
+    constructor(red: Int = 0, blue: Int = 0, green: Int = 0) : this("") {
+        this.red = red
+        this.blue = blue
+        this.green = green
+    }
+
+    init {
+        if (set.isNotEmpty()) {
             val tokens = set.split(",")
             tokens.forEach {
                 val list = it.split(" ")
@@ -26,27 +84,13 @@ class Game(line: String) {
                 }
             }
         }
-
-        override fun toString(): String {
-            return "Subset(red=$red, blue=$blue, green=$green)"
-        }
-
-
     }
-    var id: Int = -1
-    val sets: ArrayList<Subset> = ArrayList()
 
-    init {
-        val list = line.split(";", ":")
-        for (i in 1..<list.size) {
-            sets.add(Subset(list[i]))
-        }
-        id = list[0].split(" ")[1].toInt()
-        println(this)
+    fun isSetPossible(other: Subset): Boolean {
+        return (red <= other.red) and (blue <= other.blue) and (green <= other.green)
     }
 
     override fun toString(): String {
-        return "Game(id=$id, sets=$sets)"
+        return "Subset(red=$red, blue=$blue, green=$green)"
     }
-
 }
