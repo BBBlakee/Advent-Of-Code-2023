@@ -3,6 +3,19 @@ import javax.swing.text.StyledEditorKit.BoldAction
 
 fun main() {
     part1()
+    part2()
+}
+
+fun part2() {
+    val file = File("src/main/Day_2/input.txt")
+    val gameList: ArrayList<Game> = ArrayList()
+    var result = 0
+
+    file.forEachLine eachLine@{ line -> gameList.add(Game(line)) }
+    gameList.forEach { game ->
+        result += game.score
+    }
+    println("Part2: $result")
 }
 
 private fun part1() {
@@ -17,7 +30,7 @@ private fun part1() {
             result += game.id
         }
     }
-    print(result)
+    println("Part1: $result")
 }
 
 
@@ -25,10 +38,19 @@ class Game(line: String) {
 
     var id: Int = -1
     val sets: ArrayList<Subset> = ArrayList()
+    var highestRed = 0
+    var highestBlue = 0
+    var highestGreen = 0
+    val score
+        get() = highestRed * highestBlue * highestGreen
+
 
 
     constructor(red: Int = 0, blue: Int = 0, green: Int = 0) : this("") {
         sets.add(Subset(red, blue, green))
+        if (red > highestRed) highestRed = red
+        if (blue > highestBlue) highestBlue = blue
+        if (green > highestGreen) highestGreen = green
     }
 
     init {
@@ -36,6 +58,9 @@ class Game(line: String) {
             val list = line.split(";", ":")
             for (i in 1..<list.size) {
                 sets.add(Subset(list[i]))
+                if (sets[i-1].red > highestRed) highestRed = sets[i-1].red
+                if (sets[i-1].blue > highestBlue) highestBlue = sets[i-1].blue
+                if (sets[i-1].green > highestGreen) highestGreen = sets[i-1].green
             }
             id = list[0].split(" ")[1].toInt()
         }
